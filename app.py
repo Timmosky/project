@@ -10,7 +10,7 @@ import anthropic
 load_dotenv()
 
 # Set your OpenAI API key
-anthropic_api_key = os.getenv("ANTHROPIC_API_KEY") # Replace with your actual key
+anthropic_api_key = st.secrets.get("ANTHROPIC_API_KEY") # Replace with your actual key
 
 client = anthropic.Anthropic(api_key=anthropic_api_key)
 
