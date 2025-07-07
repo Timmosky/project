@@ -1,0 +1,55 @@
+import json
+import instaloader
+from http.cookiejar import Cookie, CookieJar
+
+ig_username = "gist.grid9ja"
+
+# Load exported cookies
+with open("s.json", "r") as f:
+    cookie_data = json.load(f)
+
+# 🔍 Print cookie names to verify
+for c in cookie_data:
+    print(c["name"])
+
+# Optional: check required cookies are present
+required_cookies = {"sessionid", "csrftoken", "ds_user_id"}
+cookie_names = {c["name"] for c in cookie_data}
+missing = required_cookies - cookie_names
+if missing:
+    print(f"❌ Missing cookies: {missing}")
+    exit()
+
+# Proceed to build the cookie jar...
+cookiejar = CookieJar()
+for c in cookie_data:
+    if 'expirationDate' not in c:
+        continue
+    cookie = Cookie(
+        version=0,
+        name=c['name'],
+        value=c['value'],
+        port=None,
+        port_specified=False,
+        domain=c['domain'],
+        domain_specified=True,
+        domain_initial_dot=c['domain'].startswith('.'),
+        path=c['path'],
+        path_specified=True,
+        secure=c.get('secure', False),
+        expires=int(c['expirationDate']),
+        discard=False,
+        comment=None,
+        comment_url=None,
+        rest={},
+        rfc2109=False
+    )
+    cookiejar.set_cookie(cookie)
+
+L = instaloader.Instaloader()
+L.context._session.cookies = cookiejar
+L.context.username = ig_username
+L.save_session_to_file(filename="sesion-gist.grid9ja")
+
+print(f"✅ Saved session for: {ig_username}")
+    
