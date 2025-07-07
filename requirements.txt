@@ -1,0 +1,6 @@
+instaloader
+openai
+pandas
+streamlit
+python-dotenv
+langchain-anthropic
